@@ -1,0 +1,76 @@
+{% extends 'base.html' %} {% block content %}
+<main class="container mt-4">
+  <!-- Add box shadow -->
+  <div
+    class="d-flex justify-content-center align-items-center center-button-container"
+  >
+    <a
+      href="/page/job"
+      class="btn btn-primary center-button rounded-pill"
+      id="btn-custom-2"
+    >
+      Track a new Job
+    </a>
+  </div>
+
+  <h4 class="text-center">Tracked Jobs</h4>
+  <section class="jobs-main-container">
+    {% if jobs %}
+    <div class="container jobs-container">
+      {% for job in jobs %}
+      <div class="job-card">
+        <span class="date-label">{{ job.formattedDateApplied }}</span>
+        <h4>{{ job.title }}</h4>
+        <span class="company-label">{{ job.company }}</span>
+        <div class="job-card-footer d-flex justify-content-between">
+          <div>
+            <a id="edit-img" class="pe-2" href="{{ job.editUrl }}">
+              <img src="/images/edit.svg" alt="" />
+            </a>
+            <img
+              src="/images/delete.svg"
+              id="{{ job._id }}"
+              class="delete_job_btn"
+              alt=""
+            />
+          </div>
+          <span class="job-status">{{ job.status }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div
+      class="no-job d-flex align-items-center justify-content-center flex-column flex-wrap"
+    >
+      <img id="no-job-illustration" src="/images/illustration.svg" alt="" />
+      <span class="text-center">There are currently no jobs tracked</span>
+    </div>
+
+    {% endif %}
+  </section>
+</main>
+
+{% endblock %} {% block script %}
+<script>
+  const delBtns = document.querySelectorAll(".delete_job_btn");
+  for (const btn of delBtns) {
+    btn.addEventListener('click',async function(event){
+        event.preventDefault();
+        const jobId = this.id;
+        const res = await fetch(`/api/v1/job/${jobId}`, {
+        method: "DELETE",
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (res.status !== 200) {
+                alert(data.msg);
+                return;
+            }
+            alert(data.msg);
+            window.location.href = "/page/dashboard";
+        }
+    })
+  }
+</script>
+{% endblock %}

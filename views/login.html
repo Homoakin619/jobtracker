@@ -1,0 +1,184 @@
+{% extends 'base.html' %} {% block content %} 
+
+<main class="home-main container-fluid">
+  <section class="container">
+    <div class="banner">
+      <div>
+        <img height="450" width="600" src="/images/illustration.svg" alt="" />
+      </div>
+      <div id="form-container">
+        <img id="blob1" src="/images/tip.svg" width="200" height="150" alt="" />
+        <div id="login-container">
+          <h3 class="text-center primary-text">Account Login</h3>
+          <form method="post" id="loginForm">
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                id="password"
+              />
+            </div>
+            <div class="d-grid">
+              <input
+                type="submit"
+                class="btn btn-custom rounded-pill"
+                value="Login"
+              />
+            </div>
+            <small id="notification"></small><br>
+            <small
+              >A new user?
+              <span id="showRegisterBtn" role="button" style="font-weight: bold"
+                >Register</span
+              >
+            </small>
+          </form>
+        </div>
+        <div id="register-container" style="display: none">
+          <h3 class="text-center primary-text">Account Registration</h3>
+          <form id="registerForm">
+            <div class="mb-3">
+              <label class="form-label" for="name">Fullname</label>
+              <input
+                type="text"
+                class="form-control"
+                name="fullname"
+                id="name"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                id="email"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control name="password"
+              id="password">
+            </div>
+            <div class="d-grid">
+              <input
+                type="submit"
+                class="btn btn-custom rounded-pill"
+                value="Register"
+              />
+            </div>
+
+            <small
+              >Already an existing user?
+              <span id="showLoginBtn" style="font-weight: bold" role="button"
+                >Login</span
+              >
+            </small>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-content">
+      <h3 class="text-center">Keep Track of all your job applications</h3>
+      <h4 class="text-center">and never miss an interview</h4>
+      <span>{{ req.session }}</span>
+    </div>
+  </section>
+</main>
+{% endblock %} {% block script %}
+<script>
+  const loginForm = document.querySelector("#loginForm");
+  const registerForm = document.querySelector("#registerForm");
+  const registerBtn = document.querySelector("#showRegisterBtn");
+  const loginBtn = document.querySelector("#showLoginBtn");
+  const registerContainer = document.querySelector("#register-container");
+  const loginContainer = document.querySelector("#login-container");
+  const notification = document.querySelector("#notification");
+
+
+  registerBtn.addEventListener("click", () => {
+    registerContainer.style.display = "block";
+    loginContainer.style.display = "none";
+  });
+
+  loginBtn.addEventListener("click", () => {
+    registerContainer.style.display = "none";
+    loginContainer.style.display = "block";
+  });
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const loginFormData = new FormData(event.target);
+    const formDiv = document.querySelector("#form-container");
+    const resData = {
+      email: loginFormData.get("email"),
+      password: loginFormData.get("password"),
+    };
+    try {
+      const res = await fetch("/api/v1/login", {
+        method: "POST",
+        body: JSON.stringify(resData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status !== 200) {
+        const body = await res.json();
+        notification.innerHTML = body.message;
+        notification.style.color = "red";
+        return;
+      }
+
+      window.location.href = "/page/dashboard";
+    } catch (error) {
+      console.log("logging errror");
+      console.log(error);
+    }
+  });
+
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const registerData = new FormData(event.target);
+    const formDiv = document.querySelector("#form-container");
+    const resData = {
+      fullname: registerData.get("fullname"),
+      email: registerData.get("email"),
+      password: registerData.get("password"),
+    };
+    try {
+      const res = await fetch("/api/v1/register", {
+        method: "POST",
+        body: JSON.stringify(resData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status !== 200) {
+        const body = await res.json();
+        const result = document.createElement("p");
+        result.innerHTML = body.message;
+        result.style.color = "red";
+        formDiv.appendChild(result);
+        return;
+      }
+
+      // window.location.href = "/page/dashboard"
+      registerContainer.style.display = "none";
+    } catch (error) {
+      console.log("logging errror");
+      console.log(error);
+    }
+  });
+</script>
+{% endblock %}

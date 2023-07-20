@@ -1,0 +1,101 @@
+{% extends 'base.html' %} 
+{% block content %} 
+
+<main>
+    <div class="container d-flex align-items-center justify-content-center">
+        <div id="job-container">
+            <span id="success"></span>
+            <h3 class="text-center">Edit tracked Job</h3>
+            <form method="post" id="jobForm">
+                <div class="mb-2">
+                    <label class="form-label" for="title">Job Title</label>
+                    <input class="form-control" type="text" value="{{ job.title }}" name="title" id="title">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="company">company</label>
+                    <input class="form-control" type="text" value={{ job.company }} name="company" id="company">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="description">Job Description</label>
+                    <textarea class="form-control" rows="2" name="description" id="description" required="false"> {{ job.description }} </textarea>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="role">Role</label>
+                    <input class="form-control" type="text" value="{{ job.role }}" name="role" id="role">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label" for="status">Job Status</label>
+                    <select class="form-select" name="status" aria-label="Default select example">
+                        <option {% if job.status == None %} selected {% endif %}>Select Job Status</option>
+                        <option {% if job.status == "Applied" %} selected {% endif %} value="Applied">Applied</option>
+                        <option {% if job.status == "Interview" %} selected {% endif %} value="Interview">Interview</option>
+                        <option {% if job.status == "Rejected" %} selected {% endif %} value="Rejected">Rejected</option>
+                      </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="date_applied">Date Applied</label>
+                    <input class="form-control" type="date" value="{{ job.formattedDateApplied }}" name="date_applied" id="date_applied">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="interview_date">Interview Date</label>
+                    <input class="form-control" type="date" value="{{ job.formattedInterviewDate }}" name="interview_date" id="interview_date">
+                </div>
+
+                <div class="d-grid">
+                    <input class="btn btn-custom" type="submit" value="Track Job"></div>
+            </form>
+            <span id="error"></span>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %} 
+<script>
+    const success = document.querySelector('#success');
+    const failure = document.querySelector('#error');
+    const jobForm = document.querySelector('#jobForm');
+    jobForm.addEventListener('submit',async (event) => {
+        event.preventDefault()
+        const jobFormData = new FormData(event.target);
+        const jobData = {
+            title : jobFormData.get('title'),
+            company : jobFormData.get('company'),
+            description : jobFormData.get('description'),
+            role : jobFormData.get('role'),
+            status : jobFormData.get('status'),
+            date_applied : jobFormData.get('date_applied'),
+            interview_date : jobFormData.get('interview_date'),
+        }
+        try {
+            const jobId = window.location.pathname.split('/').slice(-1);
+            const res = await fetch(`/api/v1/job/edit/${jobId}`,{
+            method: 'PATCH',
+            body: JSON.stringify(jobData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+            }); 
+            if (res.ok) {
+                const data = await res.json();
+                if (res.status !== 200) {
+                    failure.innerHTML = data.msg;
+                    return;
+                }
+                success.innerHTML = data.msg
+                console.log(data);
+
+                // setTimeout(window.location.href = "/page/dashboard",5000)
+                // window.location.href = "/page/dashboard"
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        
+
+    })
+
+</script>
+
+{% endblock %}

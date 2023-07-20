@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block content %}
+
+<main>
+  <div class="container d-flex align-items-center justify-content-center detail-container">
+    <div class="custom-card">
+      <div class="mb-2">
+        <span class="pe-2">Title:</span>
+        <span>{{ job.title }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Job Description:</span>
+        <span>{{ job.description }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Company:</span>
+        <span>{{ job.company }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Role:</span>
+        <span>{{ job.role }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Job Status:</span>
+        <span>{{ job.status }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Date Applied:</span>
+        <span>{{ job.formattedDateApplied }}</span>
+      </div>
+      <div class="mb-2">
+        <span class="pe-2">Interview Date:</span>
+        <span>{{ job.formattedInterviewDate }}</span>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %} 
