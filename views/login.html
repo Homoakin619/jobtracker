@@ -78,7 +78,7 @@
                 value="Register"
               />
             </div>
-
+            <small id="notification1"></small>
             <small
               >Already an existing user?
               <span id="showLoginBtn" style="font-weight: bold" role="button"
@@ -105,6 +105,7 @@
   const registerContainer = document.querySelector("#register-container");
   const loginContainer = document.querySelector("#login-container");
   const notification = document.querySelector("#notification");
+  const notification1 = document.querySelector("#notification1");
 
 
   registerBtn.addEventListener("click", () => {
@@ -164,12 +165,10 @@
           "Content-Type": "application/json",
         },
       });
-      if (res.status !== 200) {
+      if (res.status !== 201) {
         const body = await res.json();
-        const result = document.createElement("p");
-        result.innerHTML = body.message;
-        result.style.color = "red";
-        formDiv.appendChild(result);
+        notification1.innerHTML = body.message;
+        notification1.style.color = "red";
         return;
       }
 

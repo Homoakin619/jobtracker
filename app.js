@@ -32,6 +32,9 @@ app.use(session({
   cookie: { secure: false,maxAge: limit}
 }))
 app.use(cookieParser())
+app.get('/',(req,res) => {
+    res.redirect('/login')
+})
 
 app.use('/',pageAuthRoute);
 app.use('/page',

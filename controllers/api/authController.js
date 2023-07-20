@@ -23,10 +23,13 @@ const loginController = asyncHandler(async(req,res) => {
 })
 
 const registerController = asyncHandler( async (req,res) => {
+    try {
+        const user = await User.create({...req.body});
+        res.status(201).json({msg: "Register Route",user})    
+    } catch (error) {
+        throw new BadRequestError("Error creating user");
+    }
     
-    const user = await User.create({...req.body});
-
-    res.status(200).json({msg: "Register Route",user})
 })
 
 
