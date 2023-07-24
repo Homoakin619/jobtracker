@@ -20,7 +20,7 @@
       {% for job in jobs %}
       <div class="job-card">
         <span class="date-label">{{ job.formattedDateApplied }}</span>
-        <h4>{{ job.title }}</h4>
+        <h4 id="job-title"><a href="{{ job.url }}">{{ job.title }}</a></h4>
         <span class="company-label">{{ job.company }}</span>
         <div class="job-card-footer d-flex justify-content-between">
           <div>
