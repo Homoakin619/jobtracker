@@ -58,18 +58,18 @@
               />
             </div>
             <div class="mb-3">
-              <label class="form-label" for="email">Email</label>
+              <label class="form-label" for="register-email">Email</label>
               <input
                 type="email"
                 class="form-control"
                 name="email"
-                id="email"
+                id="register-email"
               />
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control name="password"
-              id="password">
+              <label for="register-password" class="form-label">Password</label>
+              <input type="password" class="form-control" name="register-password"
+              id="register-password">
             </div>
             <div class="d-grid">
               <input
@@ -153,13 +153,16 @@
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+
     const registerData = new FormData(event.target);
+    // console.log(registerData)
     const formDiv = document.querySelector("#form-container");
     const resData = {
       fullname: registerData.get("fullname"),
       email: registerData.get("email"),
-      password: registerData.get("password"),
+      password: registerData.get("register-password"),
     };
+    console.log(resData)
     try {
       const res = await fetch("/api/v1/register", {
         method: "POST",
@@ -168,15 +171,16 @@
           "Content-Type": "application/json",
         },
       });
+
       if (res.status !== 201) {
         const body = await res.json();
         notification1.innerHTML = body.message;
         notification1.style.color = "red";
         return;
       }
-
+      
       // window.location.href = "/page/dashboard"
-      registerContainer.style.display = "none";
+      // registerContainer.style.display = "none";
     } catch (error) {
       console.log("logging errror");
       console.log(error);

@@ -58,7 +58,11 @@ app.use(notFound)
 const port = process.env.PORT || 3000;
 const start =  () => {
     try {
-        mongoose.connect(process.env.MONGODB_URI);
+        mongoose.connect(process.env.MONGODB_URI,{
+            dbName: "jobtracker",
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+         });
         app.listen(port,console.log(`Server running at ${port}`))    
     } catch (error) {
         console.log(error);
